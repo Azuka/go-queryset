@@ -87,12 +87,12 @@ const qsCode = `
 			u[fs] = dbNameToFieldName[fs]
 		}
 		if err := db.Model(o).Updates(u).Error; err != nil {
-			if err == gorm.ErrRecordNotFound {
-				return err
+			if stderrors.Is(err, gorm.ErrRecordNotFound) {
+				return errors.WithStack(err)
 			}
 
-			return fmt.Errorf("can't update {{ .StructName }} %v fields %v: %s",
-				o, fields, err)
+			return errors.Wrapf(err, "can't update {{ .StructName }} %v fields %v",
+				o, fields)
 		}
 
 		return nil

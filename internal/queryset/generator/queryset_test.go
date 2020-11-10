@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"database/sql/driver"
 	"fmt"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 	"log"
 	"math/rand"
 	"os"
@@ -18,8 +20,6 @@ import (
 
 	"github.com/jirfag/go-queryset/internal/parser"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/jirfag/go-queryset/internal/queryset/generator/test"
 	assert "github.com/stretchr/testify/require"
 
@@ -38,11 +38,16 @@ func newDB() (sqlmock.Sqlmock, *gorm.DB) {
 		log.Fatalf("can't create sqlmock: %s", err)
 	}
 
-	gormDB, gerr := gorm.Open("mysql", db)
+	mock.ExpectQuery("SELECT VERSION()").
+		WillReturnRows(sqlmock.NewRows([]string{"version"}).AddRow("5.7"))
+
+	gormDB, gerr := gorm.Open(mysql.New(mysql.Config{
+		Conn: db,
+	}), &gorm.Config{})
+
 	if gerr != nil {
 		log.Fatalf("can't open gorm connection: %s", err)
 	}
-	gormDB.LogMode(true)
 
 	return mock, gormDB.Set("gorm:update_column", true)
 }

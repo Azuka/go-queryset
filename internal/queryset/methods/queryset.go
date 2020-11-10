@@ -308,7 +308,7 @@ func NewDeleteNumMethod(qsTypeName, structTypeName string) DeleteNumMethod {
 		constBodyMethod: newConstBodyMethod(
 			strings.Join([]string{
 				"db := qs.db.Delete(" + structTypeName + "{}" + ")",
-				"return db.RowsAffected, db.Error",
+				"return db.RowsAffected, errors.WithStack(db.Error)",
 			}, "\n"),
 		),
 	}
@@ -333,7 +333,7 @@ func NewDeleteNumUnscopedMethod(qsTypeName, structTypeName string) DeleteNumUnsc
 		constBodyMethod: newConstBodyMethod(
 			strings.Join([]string{
 				"db := qs.db.Unscoped().Delete(" + structTypeName + "{}" + ")",
-				"return db.RowsAffected, db.Error",
+				"return db.RowsAffected, errors.WithStack(db.Error)",
 			}, "\n"),
 		),
 	}
@@ -353,10 +353,10 @@ func NewCountMethod(qsTypeName string) CountMethod {
 	return CountMethod{
 		baseQuerySetMethod: newBaseQuerySetMethod(qsTypeName),
 		namedMethod:        newNamedMethod("Count"),
-		constRetMethod:     newConstRetMethod("(int, error)"),
-		constBodyMethod: newConstBodyMethod(`var count int
+		constRetMethod:     newConstRetMethod("(int64, error)"),
+		constBodyMethod: newConstBodyMethod(`var count int64
 			err := %s.Count(&count).Error
-			return count, err`, qsDbName),
+			return count, errors.WithStack(err)`, qsDbName),
 	}
 }
 

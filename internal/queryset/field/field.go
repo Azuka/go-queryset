@@ -99,6 +99,7 @@ func (g InfoGenerator) GenFieldInfo(f Field) *Info {
 		return nil
 	}
 
+	// TODO: Find equivalent in gorm v2
 	dbName := gorm.ToDBName(f.Name())
 	if dbColName := tagSetting["COLUMN"]; dbColName != "" {
 		dbName = dbColName
