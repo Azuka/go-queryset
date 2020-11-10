@@ -3,10 +3,9 @@ package field
 import (
 	"fmt"
 	"go/types"
+	"gorm.io/gorm/schema"
 	"reflect"
 	"strings"
-
-	"github.com/jinzhu/gorm"
 )
 
 type BaseInfo struct {
@@ -99,8 +98,7 @@ func (g InfoGenerator) GenFieldInfo(f Field) *Info {
 		return nil
 	}
 
-	// TODO: Find equivalent in gorm v2
-	dbName := gorm.ToDBName(f.Name())
+	dbName := (schema.NamingStrategy{}).ColumnName("", f.Name())
 	if dbColName := tagSetting["COLUMN"]; dbColName != "" {
 		dbName = dbColName
 	}
