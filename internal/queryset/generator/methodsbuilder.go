@@ -60,8 +60,10 @@ func (b *methodsBuilder) getQuerySetMethodsForField(f field.Info) []methods.Meth
 	}
 
 	if f.IsStruct {
-		// Association was found (any struct or struct pointer)
-		return []methods.Method{methods.NewPreloadMethod(fctx)}
+		return []methods.Method{
+			methods.NewJoinsMethod(fctx),
+			methods.NewPreloadMethod(fctx),
+		}
 	}
 
 	if f.IsPointer {

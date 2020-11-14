@@ -362,6 +362,12 @@ func NewCountMethod(qsTypeName string) CountMethod {
 
 // Concrete methods
 
+// NewJoinsMethod creates new Joins method
+func NewJoinsMethod(ctx QsFieldContext) FieldOperationNoArgsMethod {
+	r := newFieldOperationNoArgsMethod(ctx.WithOperationName("Joins"), false)
+	return r
+}
+
 // NewPreloadMethod creates new Preload method
 func NewPreloadMethod(ctx QsFieldContext) FieldOperationNoArgsMethod {
 	r := newFieldOperationNoArgsMethod(ctx.WithOperationName("Preload"), false)

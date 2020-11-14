@@ -108,9 +108,19 @@ func (g InfoGenerator) GenFieldInfo(f Field) *Info {
 		DBName:   dbName,
 	}
 
-	if bi.TypeName == "time.Time" {
+	if bi.TypeName == "time.Time" || bi.TypeName == "database/sql.NullTime"{
 		bi.IsTime = true
 		bi.IsNumeric = true
+		bi.TypeName = "time.Time"
+		return &Info{
+			BaseInfo: bi,
+		}
+	}
+
+	if bi.TypeName == "gorm.io/gorm.DeletedAt" {
+		bi.IsTime = true
+		bi.IsNumeric = true
+		bi.TypeName = "gorm.DeletedAt"
 		return &Info{
 			BaseInfo: bi,
 		}
